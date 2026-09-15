@@ -17,7 +17,8 @@
             --text-muted: #9ca3af;
             --optimal-bg: rgba(155, 34, 38, 0.15);
             --optimal-border: #9b2226;
-            --star-color: #fbbf24;   
+            --star-color: #fbbf24;
+            --surplus-color: #10b981; /* Green for sleep surplus */
         }
 
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 2rem 1rem; display: flex; justify-content: center; min-height: 100vh; }
@@ -61,10 +62,11 @@
         .save-card-btn:hover { background-color: var(--primary); color: white; }
 
         /* Dashboard Styles */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 2rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; margin-bottom: 2rem; }
         .stat-box { background-color: var(--bg-color); padding: 1rem 0.5rem; border-radius: 0.5rem; text-align: center; border: 1px solid #374151; }
         .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-bottom: 0.25rem; }
         .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        
         .chart-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; margin-bottom: 2rem; }
         .chart-title { font-size: 1rem; font-weight: bold; margin-bottom: 1.5rem; text-align: center; }
         .chart { display: flex; align-items: flex-end; justify-content: space-around; height: 150px; gap: 0.5rem; }
@@ -77,14 +79,9 @@
         /* Wind Down Player Styles */
         .player-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; }
         .track-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
-        .track-btn { 
-            background-color: transparent; border: 1px solid #4b5563; color: var(--text-main); 
-            padding: 1rem; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; 
-            cursor: pointer; text-align: left; transition: all 0.2s;
-        }
+        .track-btn { background-color: transparent; border: 1px solid #4b5563; color: var(--text-main); padding: 1rem; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.2s; }
         .track-btn:hover { border-color: var(--primary); }
         .track-btn.active { background-color: var(--primary); border-color: var(--primary); color: white; }
-        
         .master-controls { text-align: center; }
         .play-btn { background-color: var(--text-main); color: var(--bg-color); border: none; padding: 1rem 3rem; border-radius: 2rem; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: background 0.2s; width: 100%; }
         .play-btn.active { background-color: #4b5563; color: white; }
@@ -136,20 +133,16 @@
     <!-- WIND DOWN PLAYER -->
     <div id="view-winddown" class="view-section">
         <p class="subtitle" style="font-size: 0.9rem;">Select an ambient track to help you fall asleep.</p>
-        
         <div class="player-container">
             <div class="track-list">
                 <button class="track-btn active" onclick="selectTrack('audio/stem1.mp3', this)">Track 1</button>
                 <button class="track-btn" onclick="selectTrack('audio/stem2.mp3', this)">Track 2</button>
                 <button class="track-btn" onclick="selectTrack('audio/stem3.mp3', this)">Track 3</button>
             </div>
-            
             <div class="master-controls">
                 <button id="master-play-btn" class="play-btn" onclick="togglePlayback()">Play Audio</button>
             </div>
         </div>
-        
-        <!-- Single hidden audio element -->
         <audio id="audio-player" src="audio/stem1.mp3" loop></audio>
     </div>
 
@@ -214,22 +207,15 @@ const firebaseConfig = {
     const player = document.getElementById('audio-player');
 
     window.selectTrack = function(src, btnElement) {
-        // Update UI
         document.querySelectorAll('.track-btn').forEach(btn => btn.classList.remove('active'));
         btnElement.classList.add('active');
-
-        // Update Audio
         const wasPlaying = isPlaying;
         player.src = src;
-        
-        if (wasPlaying) {
-            player.play();
-        }
+        if (wasPlaying) player.play();
     }
 
     window.togglePlayback = function() {
         const playBtn = document.getElementById('master-play-btn');
-        
         if (isPlaying) {
             player.pause();
             playBtn.textContent = 'Play Audio';
@@ -319,15 +305,48 @@ const firebaseConfig = {
             const querySnapshot = await getDocs(q);
             let historyArray = [];
             querySnapshot.forEach((doc) => historyArray.push({ id: doc.id, ...doc.data() }));
-            historyArray.reverse();
-
+            
             if (historyArray.length === 0) { dashContent.innerHTML = `<div class="empty-state"><p>No sleep data logged yet.</p></div>`; return; }
 
+            // NEW: Sleep Debt and Streak Logic
+            let sleepDebt = 0; 
+            const BASELINE_HOURS = 8;
+            
+            // Calculate Debt over fetched logs
+            historyArray.forEach(entry => {
+                sleepDebt += (BASELINE_HOURS - entry.hours);
+            });
+            
+            // Format the debt string (surplus is negative debt)
+            let debtString = "0h";
+            let debtColor = "var(--primary)";
+            if (sleepDebt > 0) {
+                debtString = `-${sleepDebt.toFixed(1)}h`; 
+            } else if (sleepDebt < 0) {
+                debtString = `+${Math.abs(sleepDebt).toFixed(1)}h`;
+                debtColor = "var(--surplus-color)"; 
+            }
+
+            // Calculate Optimal Streak (consecutive logs with 5+ cycles)
+            let currentStreak = 0;
+            let streakBroken = false;
+            // historyArray is already newest-to-oldest from the query
+            for (let i = 0; i < historyArray.length; i++) {
+                if (historyArray[i].cycles >= 5 && !streakBroken) {
+                    currentStreak++;
+                } else {
+                    streakBroken = true;
+                }
+            }
+
+            // Reverse for the bar chart (oldest to newest)
+            historyArray.reverse();
+
+            // Existing averages calculation
             let totalHours = 0, totalCycles = 0, totalRating = 0, ratedEntriesCount = 0;
             historyArray.forEach(entry => { totalHours += entry.hours; totalCycles += entry.cycles; if (entry.rating) { totalRating += entry.rating; ratedEntriesCount++; } });
             
             const avgHours = (totalHours / historyArray.length).toFixed(1);
-            const avgCycles = (totalCycles / historyArray.length).toFixed(1);
             const avgRating = ratedEntriesCount > 0 ? (totalRating / ratedEntriesCount).toFixed(1) : "-";
             const maxHours = Math.max(...historyArray.map(e => e.hours), 9); 
             let barsHtml = '';
@@ -338,7 +357,32 @@ const firebaseConfig = {
                 barsHtml += `<div class="bar-wrapper"><div class="bar-value">${entry.hours}h</div><div class="bar" style="height: ${heightPercent}%;"></div><div class="bar-label">${entry.dateLabel}</div>${starIcon}</div>`;
             });
 
-            dashContent.innerHTML = `<div class="stats-grid"><div class="stat-box"><div class="stat-value">${avgHours}h</div><div class="stat-label">Avg Sleep</div></div><div class="stat-box"><div class="stat-value">${avgCycles}</div><div class="stat-label">Cycles</div></div><div class="stat-box"><div class="stat-value">${avgRating} <span style="font-size: 1rem; color: var(--star-color);">★</span></div><div class="stat-label">Quality</div></div></div><div class="chart-container"><div class="chart-title">Recent Sleep History</div><div class="chart">${barsHtml}</div></div>`;
+            dashContent.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value">${avgHours}h</div>
+                        <div class="stat-label">Avg Sleep</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" style="color: ${debtColor};">${debtString}</div>
+                        <div class="stat-label">Sleep Debt</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${currentStreak} 🔥</div>
+                        <div class="stat-label">Optimal Streak</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${avgRating} <span style="font-size: 1rem; color: var(--star-color);">★</span></div>
+                        <div class="stat-label">Avg Quality</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Recent Sleep History</div>
+                    <div class="chart">
+                        ${barsHtml}
+                    </div>
+                </div>
+            `;
         } catch (error) { console.error(error); dashContent.innerHTML = `<div class="empty-state"><p style="color: red;">Error connecting to Firebase.</p></div>`; }
     }
 </script>
