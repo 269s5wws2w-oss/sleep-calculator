@@ -23,164 +23,162 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            margin: 0;
-            padding: 2rem 1rem;
-            display: flex;
-            justify-content: center;
+            margin: 0; padding: 2rem 1rem;
+            display: flex; justify-content: center;
             min-height: 100vh;
         }
 
         .container {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 500px;
+            background-color: var(--card-bg); padding: 2rem;
+            border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            width: 100%; max-width: 500px;
         }
 
         h1 { text-align: center; margin-top: 0; color: var(--text-main); }
-        p.subtitle { text-align: center; color: var(--text-muted); margin-bottom: 2rem; }
+        p.subtitle { text-align: center; color: var(--text-muted); margin-bottom: 1.5rem; }
 
-        .tabs {
-            display: flex; gap: 0.5rem; margin-bottom: 1.5rem;
-            background: rgba(0,0,0,0.25); padding: 0.35rem; border-radius: 0.5rem;
+        /* Main Navigation */
+        .nav-tabs {
+            display: flex; border-bottom: 2px solid #374151; margin-bottom: 2rem;
         }
-        .tab {
-            flex: 1; padding: 0.75rem; text-align: center; background: transparent;
-            border: none; color: var(--text-muted); cursor: pointer;
-            border-radius: 0.375rem; font-weight: 600; transition: all 0.2s ease-in-out;
+        .nav-tab {
+            flex: 1; text-align: center; padding: 0.75rem; background: none; border: none;
+            color: var(--text-muted); font-weight: bold; font-size: 1rem; cursor: pointer;
+            border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s;
         }
-        .tab.active {
-            background-color: var(--card-bg); color: var(--primary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
+        .nav-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
+        /* View Containers */
+        .view-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Calculator Styles */
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: rgba(0,0,0,0.25); padding: 0.35rem; border-radius: 0.5rem; }
+        .tab { flex: 1; padding: 0.75rem; text-align: center; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 0.375rem; font-weight: 600; }
+        .tab.active { background-color: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
         .input-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .label-row { display: flex; justify-content: space-between; align-items: center; }
         label { font-weight: 500; color: var(--text-main); }
-        
-        .now-btn, .text-btn {
-            background: none; border: none; color: var(--primary);
-            font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 0;
-        }
-        .now-btn:hover, .text-btn:hover { text-decoration: underline; }
-
-        input[type="time"], input[type="number"] {
-            width: 100%; padding: 0.75rem; border-radius: 0.5rem;
-            border: 1px solid #4b5563; background-color: var(--bg-color);
-            color: white; font-size: 1.1rem; box-sizing: border-box;
-        }
+        .now-btn { background: none; border: none; color: var(--primary); font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 0; }
+        .now-btn:hover { text-decoration: underline; }
+        input[type="time"], input[type="number"] { width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #4b5563; background-color: var(--bg-color); color: white; font-size: 1.1rem; box-sizing: border-box; }
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-
-        button.calculate-btn {
-            width: 100%; padding: 1rem; background-color: var(--primary);
-            color: white; border: none; border-radius: 0.5rem;
-            font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s;
-        }
-        button.calculate-btn:hover { background-color: var(--primary-hover); }
+        button.calculate-btn { width: 100%; padding: 1rem; background-color: var(--primary); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
         
-        button.save-btn {
-            width: 100%; padding: 0.75rem; background-color: transparent;
-            color: var(--primary); border: 2px solid var(--primary); border-radius: 0.5rem;
-            font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 1rem;
-            transition: all 0.2s; display: none;
-        }
-        button.save-btn:hover { background-color: rgba(155, 34, 38, 0.1); }
-        button.save-btn.active { display: block; }
-
-        .results { margin-top: 2rem; display: none; animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .results.active { display: block; }
-
+        .results { margin-top: 2rem; display: none; }
+        .results.active { display: block; animation: fadeIn 0.4s ease-in-out; }
         .results-title { text-align: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600; }
         .cycle-cards { display: grid; gap: 1rem; }
+        
         .cycle-card {
-            background-color: var(--bg-color); padding: 1rem 1.25rem; border-radius: 0.5rem;
+            background-color: var(--bg-color); padding: 1rem; border-radius: 0.5rem;
             display: flex; justify-content: space-between; align-items: center; border: 1px solid #4b5563;
         }
         .cycle-card.optimal { background-color: var(--optimal-bg); border-color: var(--optimal-border); }
-        .time { font-size: 1.5rem; font-weight: bold; color: var(--text-main); }
+        .time { font-size: 1.5rem; font-weight: bold; color: var(--text-main); margin-bottom: 0.25rem; }
         .cycle-card.optimal .time { color: var(--primary); }
-        .details { text-align: right; display: flex; flex-direction: column; }
-        .details span:first-child { font-weight: 600; }
-        .optimal-badge {
-            font-size: 0.75rem; background-color: var(--primary); color: white;
-            padding: 0.15rem 0.5rem; border-radius: 1rem; margin-bottom: 0.3rem;
-            display: inline-block; align-self: flex-end; text-transform: uppercase; font-weight: bold;
+        
+        .card-left { display: flex; flex-direction: column; }
+        .card-right { display: flex; flex-direction: column; align-items: flex-end; }
+        
+        .optimal-badge { font-size: 0.75rem; background-color: var(--primary); color: white; padding: 0.15rem 0.5rem; border-radius: 1rem; margin-bottom: 0.3rem; font-weight: bold; text-transform: uppercase; }
+        
+        .save-card-btn {
+            background-color: transparent; border: 1px solid var(--primary); color: var(--primary);
+            padding: 0.4rem 0.8rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: bold;
+            cursor: pointer; margin-top: 0.5rem; transition: all 0.2s;
         }
+        .save-card-btn:hover { background-color: var(--primary); color: white; }
 
-        /* History Section Styles */
-        .history-section {
-            margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #4b5563;
-        }
-        .history-header {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
-        }
-        .history-list { display: flex; flex-direction: column; gap: 0.5rem; }
-        .history-item {
-            background-color: var(--bg-color); padding: 0.75rem 1rem; border-radius: 0.5rem;
-            display: flex; justify-content: space-between; font-size: 0.9rem; border: 1px solid #374151;
-        }
-        .history-date { color: var(--text-muted); }
-        .history-data { font-weight: bold; color: var(--text-main); }
+        /* Dashboard Styles */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+        .stat-box { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; text-align: center; border: 1px solid #374151; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary); margin-bottom: 0.25rem; }
+        .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        /* CSS Bar Chart */
+        .chart-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; margin-bottom: 2rem; }
+        .chart-title { font-size: 1rem; font-weight: bold; margin-bottom: 1.5rem; text-align: center; }
+        .chart { display: flex; align-items: flex-end; justify-content: space-around; height: 150px; gap: 0.5rem; }
+        .bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .bar { width: 100%; max-width: 30px; background-color: var(--primary); border-radius: 3px 3px 0 0; transition: height 0.5s ease; min-height: 2px;}
+        .bar-label { margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted); }
+        .bar-value { font-size: 0.7rem; color: white; margin-bottom: 0.25rem; font-weight: bold; }
+
+        .empty-state { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Sleep Cycle Calculator</h1>
-    <p class="subtitle">Wake up feeling refreshed by completing 90-minute sleep cycles.</p>
-
-    <div class="tabs">
-        <button class="tab active" onclick="setMode('wake')" id="tab-wake">I want to wake up at...</button>
-        <button class="tab" onclick="setMode('sleep')" id="tab-sleep">I'm going to bed at...</button>
+    <h1>Sleep Calc</h1>
+    
+    <!-- Main Navigation -->
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchMainTab('calculator')" id="nav-calculator">Calculator</button>
+        <button class="nav-tab" onclick="switchMainTab('dashboard')" id="nav-dashboard">Dashboard</button>
     </div>
 
-    <div class="input-group">
-        <div class="label-row">
-            <label id="time-label">Target Wake-up Time:</label>
-            <button class="now-btn" onclick="setTimeToNow()">Use Current Time</button>
+    <!-- CALCULATOR VIEW -->
+    <div id="view-calculator" class="view-section active">
+        <div class="tabs">
+            <button class="tab active" onclick="setMode('wake')" id="tab-wake">I want to wake up at...</button>
+            <button class="tab" onclick="setMode('sleep')" id="tab-sleep">I'm going to bed at...</button>
         </div>
-        <input type="time" id="time-input" value="07:00">
-    </div>
 
-    <div class="input-group">
-        <label>Time to fall asleep (minutes):</label>
-        <input type="number" id="fall-asleep-input" value="15" min="0" max="60">
-    </div>
-
-    <button class="calculate-btn" onclick="calculate()">Calculate Times</button>
-
-    <div class="results" id="results-container">
-        <div class="results-title" id="results-title">Suggested Bedtimes:</div>
-        <div class="cycle-cards" id="cycle-cards"></div>
-        <button class="save-btn" id="save-btn" onclick="saveToHistory()">Save this schedule</button>
-    </div>
-
-    <div class="history-section">
-        <div class="history-header">
-            <h3>Recent History</h3>
-            <button class="text-btn" onclick="clearHistory()">Clear All</button>
+        <div class="input-group">
+            <div class="label-row">
+                <label id="time-label">Target Wake-up Time:</label>
+                <button class="now-btn" onclick="setTimeToNow()">Use Current Time</button>
+            </div>
+            <input type="time" id="time-input" value="07:00">
         </div>
-        <div class="history-list" id="history-list">
-            <!-- History items will load here -->
+
+        <div class="input-group">
+            <label>Time to fall asleep (minutes):</label>
+            <input type="number" id="fall-asleep-input" value="15" min="0" max="60">
+        </div>
+
+        <button class="calculate-btn" onclick="calculate()">Calculate Times</button>
+
+        <div class="results" id="results-container">
+            <div class="results-title" id="results-title">Suggested Bedtimes:</div>
+            <div class="cycle-cards" id="cycle-cards"></div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard" class="view-section">
+        <div id="dashboard-content">
+            <!-- Injected by JavaScript -->
         </div>
     </div>
 </div>
 
 <script>
-    let currentMode = 'wake'; 
-    let currentCalculation = null; // Temporarily holds the data before saving
+    // --- Navigation ---
+    function switchMainTab(tab) {
+        document.getElementById('nav-calculator').classList.toggle('active', tab === 'calculator');
+        document.getElementById('nav-dashboard').classList.toggle('active', tab === 'dashboard');
+        document.getElementById('view-calculator').classList.toggle('active', tab === 'calculator');
+        document.getElementById('view-dashboard').classList.toggle('active', tab === 'dashboard');
+        
+        if(tab === 'dashboard') {
+            renderDashboard();
+        }
+    }
 
-    // --- Core Calculator Functions ---
+    // --- Core Calculator ---
+    let currentMode = 'wake'; 
+
     function setMode(mode) {
         currentMode = mode;
         document.getElementById('tab-wake').classList.toggle('active', mode === 'wake');
         document.getElementById('tab-sleep').classList.toggle('active', mode === 'sleep');
         document.getElementById('time-label').textContent = mode === 'wake' ? 'Target Wake-up Time:' : 'Target Bedtime:';
         document.getElementById('results-container').classList.remove('active');
-        document.getElementById('save-btn').classList.remove('active');
     }
     
     function setTimeToNow() {
@@ -208,12 +206,6 @@
         const resultsContainer = document.getElementById('cycle-cards');
         resultsContainer.innerHTML = ''; 
 
-        // Save data temporarily for the history button
-        currentCalculation = {
-            target: formatTime(baseDate),
-            mode: currentMode === 'wake' ? 'Wake at' : 'Bed at'
-        };
-
         cycles.forEach(cycle => {
             const cycleMinutes = cycle * 90;
             let resultDate = new Date(baseDate.getTime());
@@ -229,94 +221,128 @@
 
             const card = document.createElement('div');
             card.className = `cycle-card ${isOptimal ? 'optimal' : ''}`;
+            
+            // Pass the data cleanly to the save function
+            const btnHtml = `<button class="save-card-btn" onclick="saveLog('${formatTime(resultDate)}', ${cycle}, ${totalSleepHours})">Save entry</button>`;
+
             card.innerHTML = `
-                <div class="time">${formatTime(resultDate)}</div>
-                <div class="details">
-                    ${isOptimal ? '<span class="optimal-badge">Optimal</span>' : ''}
-                    <span>${cycle} Cycles</span>
+                <div class="card-left">
+                    <div class="time">${formatTime(resultDate)}</div>
                     <span style="color: var(--text-muted); font-size: 0.85rem;">${totalSleepHours} hours</span>
+                </div>
+                <div class="card-right">
+                    ${isOptimal ? '<span class="optimal-badge">Optimal</span>' : ''}
+                    <span style="font-weight: 600;">${cycle} Cycles</span>
+                    ${btnHtml}
                 </div>
             `;
             resultsContainer.appendChild(card);
         });
 
         document.getElementById('results-title').textContent = currentMode === 'wake' ? 'Suggested Bedtimes:' : 'Suggested Wake Times:';
-        
-        const container = document.getElementById('results-container');
-        container.classList.remove('active');
-        setTimeout(() => container.classList.add('active'), 10);
-        
-        document.getElementById('save-btn').classList.add('active');
-        document.getElementById('save-btn').textContent = "Save this schedule";
+        document.getElementById('results-container').classList.add('active');
     }
 
-    // --- LocalStorage History Functions ---
-    function loadHistory() {
-        // Load the string from localStorage, or start a new empty array if it doesn't exist
-        const savedData = localStorage.getItem('sleepTrackerHistory');
-        const historyArray = savedData ? JSON.parse(savedData) : [];
+    // --- Dashboard & Analytics Logic ---
+    function saveLog(timeStr, cycles, hours) {
+        const savedData = localStorage.getItem('sleepTrackerData');
+        let historyArray = savedData ? JSON.parse(savedData) : [];
         
-        const listElement = document.getElementById('history-list');
-        listElement.innerHTML = ''; // Clear current list
+        // Simple date format: "Mon 15"
+        const dateObj = new Date();
+        const dateStr = dateObj.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
+
+        const newEntry = {
+            id: Date.now(),
+            dateLabel: dateStr,
+            time: timeStr,
+            cycles: parseInt(cycles),
+            hours: parseFloat(hours)
+        };
+        
+        historyArray.push(newEntry);
+        
+        // Keep max 7 days of history for the chart
+        if (historyArray.length > 7) historyArray.shift(); 
+        
+        localStorage.setItem('sleepTrackerData', JSON.stringify(historyArray));
+        
+        alert(`Saved ${hours} hours to your log! Check the dashboard.`);
+    }
+
+    function renderDashboard() {
+        const dashContent = document.getElementById('dashboard-content');
+        const savedData = localStorage.getItem('sleepTrackerData');
+        const historyArray = savedData ? JSON.parse(savedData) : [];
 
         if (historyArray.length === 0) {
-            listElement.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">No saved schedules yet.</div>';
+            dashContent.innerHTML = `
+                <div class="empty-state">
+                    <p>No sleep data logged yet.</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Calculate a time and click 'Save entry' to start building your dashboard.</p>
+                </div>
+            `;
             return;
         }
 
-        // Loop through the array and create HTML elements for each record
-        historyArray.forEach(record => {
-            const item = document.createElement('div');
-            item.className = 'history-item';
-            item.innerHTML = `
-                <span class="history-date">${record.date}</span>
-                <span class="history-data">${record.mode}: ${record.target}</span>
-            `;
-            listElement.appendChild(item);
+        // Calculate Analytics
+        let totalHours = 0;
+        let totalCycles = 0;
+        
+        historyArray.forEach(entry => {
+            totalHours += entry.hours;
+            totalCycles += entry.cycles;
         });
+
+        const avgHours = (totalHours / historyArray.length).toFixed(1);
+        const avgCycles = (totalCycles / historyArray.length).toFixed(1);
+
+        // Build HTML for the CSS Chart
+        // We find the max hours so we can scale the bar heights dynamically
+        const maxHours = Math.max(...historyArray.map(e => e.hours), 9); // Minimum scale of 9 hours
+        let barsHtml = '';
+
+        historyArray.forEach(entry => {
+            const heightPercent = (entry.hours / maxHours) * 100;
+            barsHtml += `
+                <div class="bar-wrapper">
+                    <div class="bar-value">${entry.hours}h</div>
+                    <div class="bar" style="height: ${heightPercent}%;"></div>
+                    <div class="bar-label">${entry.dateLabel}</div>
+                </div>
+            `;
+        });
+
+        // Inject the Dashboard HTML
+        dashContent.innerHTML = `
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">${avgHours}h</div>
+                    <div class="stat-label">Avg Sleep</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${avgCycles}</div>
+                    <div class="stat-label">Avg Cycles</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Recent Sleep History</div>
+                <div class="chart">
+                    ${barsHtml}
+                </div>
+            </div>
+            
+            <button onclick="if(confirm('Clear all data?')) { localStorage.removeItem('sleepTrackerData'); renderDashboard(); }" 
+                    style="width: 100%; padding: 0.75rem; background: transparent; border: 1px solid #4b5563; color: var(--text-muted); border-radius: 0.5rem; cursor: pointer;">
+                Clear Data History
+            </button>
+        `;
     }
 
-    function saveToHistory() {
-        if (!currentCalculation) return;
-
-        // 1. Get the current array from local storage
-        const savedData = localStorage.getItem('sleepTrackerHistory');
-        let historyArray = savedData ? JSON.parse(savedData) : [];
-
-        // 2. Add the new record with today's date
-        const newRecord = {
-            date: new Date().toLocaleDateString(),
-            mode: currentCalculation.mode,
-            target: currentCalculation.target
-        };
-        
-        // Add to the beginning of the array
-        historyArray.unshift(newRecord); 
-        
-        // Keep only the 5 most recent records
-        if (historyArray.length > 5) historyArray.pop(); 
-
-        // 3. Stringify the array and save it back to localStorage
-        localStorage.setItem('sleepTrackerHistory', JSON.stringify(historyArray));
-        
-        // Update the UI
-        document.getElementById('save-btn').textContent = "✓ Saved!";
-        loadHistory();
-    }
-
-    function clearHistory() {
-        if(confirm("Delete all history?")) {
-            localStorage.removeItem('sleepTrackerHistory');
-            loadHistory();
-        }
-    }
-
-    // Initialize the app on page load
-    loadHistory();
-    calculate();
-    
+    // Initialize
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('Service Worker not registered', err));
+        navigator.serviceWorker.register('sw.js').catch(err => {});
     }
 </script>
 
