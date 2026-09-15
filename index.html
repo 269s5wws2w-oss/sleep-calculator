@@ -74,19 +74,20 @@
         .bar-value { font-size: 0.7rem; color: white; margin-bottom: 0.25rem; font-weight: bold; }
         .empty-state { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
 
-        /* Mixer / Wind Down Styles */
-        .mixer-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; }
-        .master-controls { text-align: center; margin-bottom: 2rem; }
-        .play-btn { background-color: var(--primary); color: white; border: none; padding: 1rem 3rem; border-radius: 2rem; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .play-btn.active { background-color: #4b5563; }
-        .channel-strip { display: flex; align-items: center; margin-bottom: 1.5rem; gap: 1rem; }
-        .channel-label { width: 80px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-align: right; }
+        /* Wind Down Player Styles */
+        .player-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; }
+        .track-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+        .track-btn { 
+            background-color: transparent; border: 1px solid #4b5563; color: var(--text-main); 
+            padding: 1rem; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; 
+            cursor: pointer; text-align: left; transition: all 0.2s;
+        }
+        .track-btn:hover { border-color: var(--primary); }
+        .track-btn.active { background-color: var(--primary); border-color: var(--primary); color: white; }
         
-        /* Custom HTML Fader */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 12px; border-radius: 3px; background: var(--text-main); cursor: pointer; margin-top: -10px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #4b5563; border-radius: 2px; }
-        input[type=range]:focus { outline: none; }
+        .master-controls { text-align: center; }
+        .play-btn { background-color: var(--text-main); color: var(--bg-color); border: none; padding: 1rem 3rem; border-radius: 2rem; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .play-btn.active { background-color: #4b5563; color: white; }
 
         /* Modal Styles */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; animation: fadeIn 0.2s; }
@@ -104,13 +105,12 @@
     
     <div class="nav-tabs">
         <button class="nav-tab active" onclick="switchMainTab('calculator')" id="nav-calculator">Calculate</button>
-        <button class="nav-tab" onclick="switchMainTab('mixer')" id="nav-mixer">Wind Down</button>
+        <button class="nav-tab" onclick="switchMainTab('winddown')" id="nav-winddown">Wind Down</button>
         <button class="nav-tab" onclick="switchMainTab('dashboard')" id="nav-dashboard">Dashboard</button>
     </div>
 
     <!-- CALCULATOR -->
     <div id="view-calculator" class="view-section active">
-        <!-- Exact same calculator HTML as before -->
         <div class="tabs">
             <button class="tab active" onclick="setMode('wake')" id="tab-wake">I want to wake up at...</button>
             <button class="tab" onclick="setMode('sleep')" id="tab-sleep">I'm going to bed at...</button>
@@ -133,36 +133,24 @@
         </div>
     </div>
 
-    <!-- MIXER / WIND DOWN -->
-    <div id="view-mixer" class="view-section">
-        <p class="subtitle" style="font-size: 0.9rem;">Mix your own ambient soundscape.</p>
+    <!-- WIND DOWN PLAYER -->
+    <div id="view-winddown" class="view-section">
+        <p class="subtitle" style="font-size: 0.9rem;">Select an ambient track to help you fall asleep.</p>
         
-        <div class="mixer-container">
+        <div class="player-container">
+            <div class="track-list">
+                <button class="track-btn active" onclick="selectTrack('audio/stem1.mp3', this)">Track 1: Acoustic Sleep</button>
+                <button class="track-btn" onclick="selectTrack('audio/stem2.mp3', this)">Track 2: Deep Ambient Pad</button>
+                <button class="track-btn" onclick="selectTrack('audio/stem3.mp3', this)">Track 3: Steady Rain / Noise</button>
+            </div>
+            
             <div class="master-controls">
                 <button id="master-play-btn" class="play-btn" onclick="togglePlayback()">Play Audio</button>
             </div>
-
-            <div class="channel-strip">
-                <div class="channel-label">Acoustic</div>
-                <!-- Sliders default to 50% (0.5) -->
-                <input type="range" id="fader1" min="0" max="1" step="0.01" value="0.5" oninput="updateGain(1, this.value)">
-            </div>
-            
-            <div class="channel-strip">
-                <div class="channel-label">Pad</div>
-                <input type="range" id="fader2" min="0" max="1" step="0.01" value="0.5" oninput="updateGain(2, this.value)">
-            </div>
-            
-            <div class="channel-strip">
-                <div class="channel-label">Noise</div>
-                <input type="range" id="fader3" min="0" max="1" step="0.01" value="0.5" oninput="updateGain(3, this.value)">
-            </div>
         </div>
         
-        <!-- Hidden HTML5 Audio Elements used as the source files -->
-        <audio id="track1" src="audio/stem1.mp3" loop crossorigin="anonymous"></audio>
-        <audio id="track2" src="audio/stem2.mp3" loop crossorigin="anonymous"></audio>
-        <audio id="track3" src="audio/stem3.mp3" loop crossorigin="anonymous"></audio>
+        <!-- Single hidden audio element -->
+        <audio id="audio-player" src="audio/stem1.mp3" loop></audio>
     </div>
 
     <!-- DASHBOARD -->
@@ -173,7 +161,6 @@
 
 <!-- RATING MODAL -->
 <div id="rating-modal" class="modal-overlay">
-    <!-- Exact same modal HTML as before -->
     <div class="modal-card">
         <h3 style="margin-top: 0;">Rate your sleep</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem;">How refreshed did you feel?</p>
@@ -212,88 +199,51 @@ const firebaseConfig = {
     // --- NAVIGATION ---
     window.switchMainTab = function(tab) {
         document.getElementById('nav-calculator').classList.toggle('active', tab === 'calculator');
-        document.getElementById('nav-mixer').classList.toggle('active', tab === 'mixer');
+        document.getElementById('nav-winddown').classList.toggle('active', tab === 'winddown');
         document.getElementById('nav-dashboard').classList.toggle('active', tab === 'dashboard');
         
         document.getElementById('view-calculator').classList.toggle('active', tab === 'calculator');
-        document.getElementById('view-mixer').classList.toggle('active', tab === 'mixer');
+        document.getElementById('view-winddown').classList.toggle('active', tab === 'winddown');
         document.getElementById('view-dashboard').classList.toggle('active', tab === 'dashboard');
         
         if(tab === 'dashboard') renderDashboard();
     }
 
-    // --- WEB AUDIO API: THE MIXER CONSOLE ---
-    let audioCtx = null;
+    // --- AUDIO PLAYER LOGIC ---
     let isPlaying = false;
-    
-    // Arrays to hold our channel strips
-    const tracks = [];
-    const gainNodes = [];
+    const player = document.getElementById('audio-player');
 
-    // The browser requires user interaction before firing up the audio engine
+    window.selectTrack = function(src, btnElement) {
+        // Update UI
+        document.querySelectorAll('.track-btn').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+
+        // Update Audio
+        const wasPlaying = isPlaying;
+        player.src = src;
+        
+        if (wasPlaying) {
+            player.play();
+        }
+    }
+
     window.togglePlayback = function() {
         const playBtn = document.getElementById('master-play-btn');
-
-        // Initialize the master bus if it hasn't been created yet
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Route Channel 1
-            const track1El = document.getElementById('track1');
-            const source1 = audioCtx.createMediaElementSource(track1El);
-            const gain1 = audioCtx.createGain();
-            gain1.gain.value = document.getElementById('fader1').value;
-            source1.connect(gain1).connect(audioCtx.destination);
-            tracks.push(track1El);
-            gainNodes.push(gain1);
-
-            // Route Channel 2
-            const track2El = document.getElementById('track2');
-            const source2 = audioCtx.createMediaElementSource(track2El);
-            const gain2 = audioCtx.createGain();
-            gain2.gain.value = document.getElementById('fader2').value;
-            source2.connect(gain2).connect(audioCtx.destination);
-            tracks.push(track2El);
-            gainNodes.push(gain2);
-
-            // Route Channel 3
-            const track3El = document.getElementById('track3');
-            const source3 = audioCtx.createMediaElementSource(track3El);
-            const gain3 = audioCtx.createGain();
-            gain3.gain.value = document.getElementById('fader3').value;
-            source3.connect(gain3).connect(audioCtx.destination);
-            tracks.push(track3El);
-            gainNodes.push(gain3);
-        }
-
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-
+        
         if (isPlaying) {
-            tracks.forEach(track => track.pause());
+            player.pause();
             playBtn.textContent = 'Play Audio';
             playBtn.classList.remove('active');
             isPlaying = false;
         } else {
-            // Play all tracks simultaneously to keep phase
-            tracks.forEach(track => track.play());
+            player.play();
             playBtn.textContent = 'Stop Audio';
             playBtn.classList.add('active');
             isPlaying = true;
         }
     }
 
-    // Map HTML Range Slider to Gain Node Value
-    window.updateGain = function(channel, value) {
-        // -1 because array is 0-indexed, but channel arguments are 1, 2, 3
-        if (gainNodes[channel - 1]) {
-            // We use linearRampToValueAtTime for a smooth, click-free fader automation
-            gainNodes[channel - 1].gain.linearRampToValueAtTime(value, audioCtx.currentTime + 0.05);
-        }
-    }
-
-    // --- CALCULATOR LOGIC (Unchanged) ---
+    // --- CALCULATOR LOGIC ---
     let currentMode = 'wake'; 
     let pendingLog = null; 
 
@@ -345,7 +295,7 @@ const firebaseConfig = {
         document.getElementById('results-container').classList.add('active');
     }
 
-    // --- MODAL & FIREBASE LOGIC (Unchanged) ---
+    // --- MODAL & FIREBASE LOGIC ---
     window.openModal = function(timeStr, cycles, hours) { pendingLog = { time: timeStr, cycles: parseInt(cycles), hours: parseFloat(hours) }; document.getElementById('rating-modal').classList.add('active'); }
     window.closeModal = function() { document.getElementById('rating-modal').classList.remove('active'); pendingLog = null; }
 
