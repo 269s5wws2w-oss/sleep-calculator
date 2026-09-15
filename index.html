@@ -8,7 +8,6 @@
     <link rel="apple-touch-icon" href="icon.png">
     
     <style>
-        /* All your exact same CSS from before */
         :root {
             --bg-color: #1a1c1e;     
             --card-bg: #2d3238;      
@@ -34,10 +33,10 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Calculator Styles */
         .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: rgba(0,0,0,0.25); padding: 0.35rem; border-radius: 0.5rem; }
         .tab { flex: 1; padding: 0.75rem; text-align: center; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 0.375rem; font-weight: 600; }
         .tab.active { background-color: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-        
         .input-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .label-row { display: flex; justify-content: space-between; align-items: center; }
         label { font-weight: 500; color: var(--text-main); }
@@ -45,31 +44,27 @@
         .now-btn:hover { text-decoration: underline; }
         input[type="time"], input[type="number"] { width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #4b5563; background-color: var(--bg-color); color: white; font-size: 1.1rem; box-sizing: border-box; }
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-        
         button.calculate-btn { width: 100%; padding: 1rem; background-color: var(--primary); color: white; border: none; border-radius: 0.5rem; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
         
         .results { margin-top: 2rem; display: none; }
         .results.active { display: block; animation: fadeIn 0.4s ease-in-out; }
         .results-title { text-align: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600; }
         .cycle-cards { display: grid; gap: 1rem; }
-        
         .cycle-card { background-color: var(--bg-color); padding: 1rem; border-radius: 0.5rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid #4b5563; }
         .cycle-card.optimal { background-color: var(--optimal-bg); border-color: var(--optimal-border); }
         .time { font-size: 1.5rem; font-weight: bold; color: var(--text-main); margin-bottom: 0.25rem; }
         .cycle-card.optimal .time { color: var(--primary); }
-        
         .card-left { display: flex; flex-direction: column; }
         .card-right { display: flex; flex-direction: column; align-items: flex-end; }
-        
         .optimal-badge { font-size: 0.75rem; background-color: var(--primary); color: white; padding: 0.15rem 0.5rem; border-radius: 1rem; margin-bottom: 0.3rem; font-weight: bold; text-transform: uppercase; }
         .save-card-btn { background-color: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 0.4rem 0.8rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: bold; cursor: pointer; margin-top: 0.5rem; transition: all 0.2s; }
         .save-card-btn:hover { background-color: var(--primary); color: white; }
 
+        /* Dashboard Styles */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 2rem; }
         .stat-box { background-color: var(--bg-color); padding: 1rem 0.5rem; border-radius: 0.5rem; text-align: center; border: 1px solid #374151; }
         .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-bottom: 0.25rem; }
         .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
-        
         .chart-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; margin-bottom: 2rem; }
         .chart-title { font-size: 1rem; font-weight: bold; margin-bottom: 1.5rem; text-align: center; }
         .chart { display: flex; align-items: flex-end; justify-content: space-around; height: 150px; gap: 0.5rem; }
@@ -79,6 +74,21 @@
         .bar-value { font-size: 0.7rem; color: white; margin-bottom: 0.25rem; font-weight: bold; }
         .empty-state { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
 
+        /* Mixer / Wind Down Styles */
+        .mixer-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; }
+        .master-controls { text-align: center; margin-bottom: 2rem; }
+        .play-btn { background-color: var(--primary); color: white; border: none; padding: 1rem 3rem; border-radius: 2rem; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .play-btn.active { background-color: #4b5563; }
+        .channel-strip { display: flex; align-items: center; margin-bottom: 1.5rem; gap: 1rem; }
+        .channel-label { width: 80px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-align: right; }
+        
+        /* Custom HTML Fader */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 12px; border-radius: 3px; background: var(--text-main); cursor: pointer; margin-top: -10px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #4b5563; border-radius: 2px; }
+        input[type=range]:focus { outline: none; }
+
+        /* Modal Styles */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; animation: fadeIn 0.2s; }
         .modal-overlay.active { display: flex; }
         .modal-card { background: var(--card-bg); padding: 2rem; border-radius: 1rem; text-align: center; border: 1px solid #4b5563; max-width: 90%; width: 320px; }
@@ -93,17 +103,18 @@
     <h1>Sleep Calc</h1>
     
     <div class="nav-tabs">
-        <button class="nav-tab active" onclick="switchMainTab('calculator')" id="nav-calculator">Calculator</button>
+        <button class="nav-tab active" onclick="switchMainTab('calculator')" id="nav-calculator">Calculate</button>
+        <button class="nav-tab" onclick="switchMainTab('mixer')" id="nav-mixer">Wind Down</button>
         <button class="nav-tab" onclick="switchMainTab('dashboard')" id="nav-dashboard">Dashboard</button>
     </div>
 
     <!-- CALCULATOR -->
     <div id="view-calculator" class="view-section active">
+        <!-- Exact same calculator HTML as before -->
         <div class="tabs">
             <button class="tab active" onclick="setMode('wake')" id="tab-wake">I want to wake up at...</button>
             <button class="tab" onclick="setMode('sleep')" id="tab-sleep">I'm going to bed at...</button>
         </div>
-
         <div class="input-group">
             <div class="label-row">
                 <label id="time-label">Target Wake-up Time:</label>
@@ -116,11 +127,42 @@
             <input type="number" id="fall-asleep-input" value="15" min="0" max="60">
         </div>
         <button class="calculate-btn" onclick="calculate()">Calculate Times</button>
-
         <div class="results" id="results-container">
             <div class="results-title" id="results-title">Suggested Bedtimes:</div>
             <div class="cycle-cards" id="cycle-cards"></div>
         </div>
+    </div>
+
+    <!-- MIXER / WIND DOWN -->
+    <div id="view-mixer" class="view-section">
+        <p class="subtitle" style="font-size: 0.9rem;">Mix your own ambient soundscape.</p>
+        
+        <div class="mixer-container">
+            <div class="master-controls">
+                <button id="master-play-btn" class="play-btn" onclick="togglePlayback()">Play Audio</button>
+            </div>
+
+            <div class="channel-strip">
+                <div class="channel-label">Acoustic</div>
+                <!-- Sliders default to 50% (0.5) -->
+                <input type="range" id="fader1" min="0" max="1" step="0.01" value="0.5" oninput="updateGain(1, this.value)">
+            </div>
+            
+            <div class="channel-strip">
+                <div class="channel-label">Pad</div>
+                <input type="range" id="fader2" min="0" max="1" step="0.01" value="0.5" oninput="updateGain(2, this.value)">
+            </div>
+            
+            <div class="channel-strip">
+                <div class="channel-label">Noise</div>
+                <input type="range" id="fader3" min="0" max="1" step="0.01" value="0.5" oninput="updateGain(3, this.value)">
+            </div>
+        </div>
+        
+        <!-- Hidden HTML5 Audio Elements used as the source files -->
+        <audio id="track1" src="audio/stem1.mp3" loop crossorigin="anonymous"></audio>
+        <audio id="track2" src="audio/stem2.mp3" loop crossorigin="anonymous"></audio>
+        <audio id="track3" src="audio/stem3.mp3" loop crossorigin="anonymous"></audio>
     </div>
 
     <!-- DASHBOARD -->
@@ -131,6 +173,7 @@
 
 <!-- RATING MODAL -->
 <div id="rating-modal" class="modal-overlay">
+    <!-- Exact same modal HTML as before -->
     <div class="modal-card">
         <h3 style="margin-top: 0;">Rate your sleep</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem;">How refreshed did you feel?</p>
@@ -145,14 +188,14 @@
     </div>
 </div>
 
-<!-- Notice the type="module" here! -->
 <script type="module">
-    // 1. IMPORT FIREBASE SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-    // 2. PASTE YOUR FIREBASE CONFIG HERE
-   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    // ==========================================
+    // ⚠️ PASTE YOUR FIREBASE CONFIG HERE ⚠️
+    // ==========================================
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAOx7X94-LnEKPkQRecWBHoh9Fn_xWluAs",
   authDomain: "sleep-calculator-7c704.firebaseapp.com",
@@ -163,21 +206,96 @@ const firebaseConfig = {
   measurementId: "G-N42CYFGT7G"
 };
 
-    // 3. INITIALIZE CLOUD CONNECTION
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let currentMode = 'wake'; 
-    let pendingLog = null; 
-
-    // Because this is a module, we have to attach functions to the window so the HTML buttons can see them
+    // --- NAVIGATION ---
     window.switchMainTab = function(tab) {
         document.getElementById('nav-calculator').classList.toggle('active', tab === 'calculator');
+        document.getElementById('nav-mixer').classList.toggle('active', tab === 'mixer');
         document.getElementById('nav-dashboard').classList.toggle('active', tab === 'dashboard');
+        
         document.getElementById('view-calculator').classList.toggle('active', tab === 'calculator');
+        document.getElementById('view-mixer').classList.toggle('active', tab === 'mixer');
         document.getElementById('view-dashboard').classList.toggle('active', tab === 'dashboard');
+        
         if(tab === 'dashboard') renderDashboard();
     }
+
+    // --- WEB AUDIO API: THE MIXER CONSOLE ---
+    let audioCtx = null;
+    let isPlaying = false;
+    
+    // Arrays to hold our channel strips
+    const tracks = [];
+    const gainNodes = [];
+
+    // The browser requires user interaction before firing up the audio engine
+    window.togglePlayback = function() {
+        const playBtn = document.getElementById('master-play-btn');
+
+        // Initialize the master bus if it hasn't been created yet
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Route Channel 1
+            const track1El = document.getElementById('track1');
+            const source1 = audioCtx.createMediaElementSource(track1El);
+            const gain1 = audioCtx.createGain();
+            gain1.gain.value = document.getElementById('fader1').value;
+            source1.connect(gain1).connect(audioCtx.destination);
+            tracks.push(track1El);
+            gainNodes.push(gain1);
+
+            // Route Channel 2
+            const track2El = document.getElementById('track2');
+            const source2 = audioCtx.createMediaElementSource(track2El);
+            const gain2 = audioCtx.createGain();
+            gain2.gain.value = document.getElementById('fader2').value;
+            source2.connect(gain2).connect(audioCtx.destination);
+            tracks.push(track2El);
+            gainNodes.push(gain2);
+
+            // Route Channel 3
+            const track3El = document.getElementById('track3');
+            const source3 = audioCtx.createMediaElementSource(track3El);
+            const gain3 = audioCtx.createGain();
+            gain3.gain.value = document.getElementById('fader3').value;
+            source3.connect(gain3).connect(audioCtx.destination);
+            tracks.push(track3El);
+            gainNodes.push(gain3);
+        }
+
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        if (isPlaying) {
+            tracks.forEach(track => track.pause());
+            playBtn.textContent = 'Play Audio';
+            playBtn.classList.remove('active');
+            isPlaying = false;
+        } else {
+            // Play all tracks simultaneously to keep phase
+            tracks.forEach(track => track.play());
+            playBtn.textContent = 'Stop Audio';
+            playBtn.classList.add('active');
+            isPlaying = true;
+        }
+    }
+
+    // Map HTML Range Slider to Gain Node Value
+    window.updateGain = function(channel, value) {
+        // -1 because array is 0-indexed, but channel arguments are 1, 2, 3
+        if (gainNodes[channel - 1]) {
+            // We use linearRampToValueAtTime for a smooth, click-free fader automation
+            gainNodes[channel - 1].gain.linearRampToValueAtTime(value, audioCtx.currentTime + 0.05);
+        }
+    }
+
+    // --- CALCULATOR LOGIC (Unchanged) ---
+    let currentMode = 'wake'; 
+    let pendingLog = null; 
 
     window.setMode = function(mode) {
         currentMode = mode;
@@ -193,9 +311,7 @@ const firebaseConfig = {
         window.calculate();
     }
 
-    function formatTime(date) {
-        return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    }
+    function formatTime(date) { return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); }
 
     window.calculate = function() {
         const timeInput = document.getElementById('time-input').value;
@@ -205,7 +321,6 @@ const firebaseConfig = {
         const [hours, minutes] = timeInput.split(':').map(Number);
         const baseDate = new Date();
         baseDate.setHours(hours, minutes, 0, 0);
-
         const cycles = [6, 5, 4, 3]; 
         const resultsContainer = document.getElementById('cycle-cards');
         resultsContainer.innerHTML = ''; 
@@ -218,22 +333,11 @@ const firebaseConfig = {
 
             const totalHours = (cycleMinutes / 60).toFixed(1);
             const isOptimal = cycle === 5 || cycle === 6;
-
             const card = document.createElement('div');
             card.className = `cycle-card ${isOptimal ? 'optimal' : ''}`;
             const btnHtml = `<button class="save-card-btn" onclick="openModal('${formatTime(resultDate)}', ${cycle}, ${totalHours})">Save entry</button>`;
 
-            card.innerHTML = `
-                <div class="card-left">
-                    <div class="time">${formatTime(resultDate)}</div>
-                    <span style="color: var(--text-muted); font-size: 0.85rem;">${totalHours} hours</span>
-                </div>
-                <div class="card-right">
-                    ${isOptimal ? '<span class="optimal-badge">Optimal</span>' : ''}
-                    <span style="font-weight: 600;">${cycle} Cycles</span>
-                    ${btnHtml}
-                </div>
-            `;
+            card.innerHTML = `<div class="card-left"><div class="time">${formatTime(resultDate)}</div><span style="color: var(--text-muted); font-size: 0.85rem;">${totalHours} hours</span></div><div class="card-right">${isOptimal ? '<span class="optimal-badge">Optimal</span>' : ''}<span style="font-weight: 600;">${cycle} Cycles</span>${btnHtml}</div>`;
             resultsContainer.appendChild(card);
         });
 
@@ -241,142 +345,51 @@ const firebaseConfig = {
         document.getElementById('results-container').classList.add('active');
     }
 
-    window.openModal = function(timeStr, cycles, hours) {
-        pendingLog = { time: timeStr, cycles: parseInt(cycles), hours: parseFloat(hours) };
-        document.getElementById('rating-modal').classList.add('active');
-    }
+    // --- MODAL & FIREBASE LOGIC (Unchanged) ---
+    window.openModal = function(timeStr, cycles, hours) { pendingLog = { time: timeStr, cycles: parseInt(cycles), hours: parseFloat(hours) }; document.getElementById('rating-modal').classList.add('active'); }
+    window.closeModal = function() { document.getElementById('rating-modal').classList.remove('active'); pendingLog = null; }
 
-    window.closeModal = function() {
-        document.getElementById('rating-modal').classList.remove('active');
-        pendingLog = null;
-    }
-
-    // --- FIREBASE: SAVE DATA TO CLOUD ---
     window.submitRating = async function(ratingNumber) {
         if (!pendingLog) return;
-        
-        // Show loading state on the modal
         document.querySelector('.stars-container').innerHTML = '<p style="color: var(--primary);">Saving to cloud...</p>';
-
-        const dateObj = new Date();
-        const dateStr = dateObj.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
-
+        const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
         try {
-            // Push the data to your 'sleepLogs' collection in Firestore
-            await addDoc(collection(db, "sleepLogs"), {
-                dateLabel: dateStr,
-                time: pendingLog.time,
-                cycles: pendingLog.cycles,
-                hours: pendingLog.hours,
-                rating: ratingNumber,
-                timestamp: Date.now() // Allows us to sort them by date easily
-            });
-            
+            await addDoc(collection(db, "sleepLogs"), { dateLabel: dateStr, time: pendingLog.time, cycles: pendingLog.cycles, hours: pendingLog.hours, rating: ratingNumber, timestamp: Date.now() });
             window.closeModal();
-            // Reset the stars for next time
-            document.querySelector('.stars-container').innerHTML = `
-                <button class="star-btn" onclick="submitRating(5)">★</button>
-                <button class="star-btn" onclick="submitRating(4)">★</button>
-                <button class="star-btn" onclick="submitRating(3)">★</button>
-                <button class="star-btn" onclick="submitRating(2)">★</button>
-                <button class="star-btn" onclick="submitRating(1)">★</button>
-            `;
+            document.querySelector('.stars-container').innerHTML = `<button class="star-btn" onclick="submitRating(5)">★</button><button class="star-btn" onclick="submitRating(4)">★</button><button class="star-btn" onclick="submitRating(3)">★</button><button class="star-btn" onclick="submitRating(2)">★</button><button class="star-btn" onclick="submitRating(1)">★</button>`;
             window.switchMainTab('dashboard');
-        } catch (error) {
-            console.error("Error adding document: ", error);
-            alert("Database error: Could not save to cloud.");
-        }
+        } catch (error) { console.error(error); alert("Database error."); }
     }
 
-    // --- FIREBASE: FETCH DATA FROM CLOUD ---
     window.renderDashboard = async function() {
         const dashContent = document.getElementById('dashboard-content');
         dashContent.innerHTML = `<div class="empty-state"><p>Loading data from cloud...</p></div>`;
-
         try {
-            // Query the database for the 7 most recent entries
             const q = query(collection(db, "sleepLogs"), orderBy("timestamp", "desc"), limit(7));
             const querySnapshot = await getDocs(q);
-            
             let historyArray = [];
-            querySnapshot.forEach((doc) => {
-                // Add the cloud document ID so we can track it
-                historyArray.push({ id: doc.id, ...doc.data() });
-            });
-            
-            // Reverse the array so the oldest is on the left in the chart
+            querySnapshot.forEach((doc) => historyArray.push({ id: doc.id, ...doc.data() }));
             historyArray.reverse();
 
-            if (historyArray.length === 0) {
-                dashContent.innerHTML = `<div class="empty-state"><p>No sleep data logged yet.</p></div>`;
-                return;
-            }
+            if (historyArray.length === 0) { dashContent.innerHTML = `<div class="empty-state"><p>No sleep data logged yet.</p></div>`; return; }
 
-            let totalHours = 0;
-            let totalCycles = 0;
-            let totalRating = 0;
-            let ratedEntriesCount = 0;
+            let totalHours = 0, totalCycles = 0, totalRating = 0, ratedEntriesCount = 0;
+            historyArray.forEach(entry => { totalHours += entry.hours; totalCycles += entry.cycles; if (entry.rating) { totalRating += entry.rating; ratedEntriesCount++; } });
             
-            historyArray.forEach(entry => {
-                totalHours += entry.hours;
-                totalCycles += entry.cycles;
-                if (entry.rating) {
-                    totalRating += entry.rating;
-                    ratedEntriesCount++;
-                }
-            });
-
             const avgHours = (totalHours / historyArray.length).toFixed(1);
             const avgCycles = (totalCycles / historyArray.length).toFixed(1);
             const avgRating = ratedEntriesCount > 0 ? (totalRating / ratedEntriesCount).toFixed(1) : "-";
-
             const maxHours = Math.max(...historyArray.map(e => e.hours), 9); 
             let barsHtml = '';
 
             historyArray.forEach(entry => {
                 const heightPercent = (entry.hours / maxHours) * 100;
                 const starIcon = entry.rating ? `<div style="color: var(--star-color); font-size: 0.6rem; margin-top: 2px;">★ ${entry.rating}</div>` : '';
-                
-                barsHtml += `
-                    <div class="bar-wrapper">
-                        <div class="bar-value">${entry.hours}h</div>
-                        <div class="bar" style="height: ${heightPercent}%;"></div>
-                        <div class="bar-label">${entry.dateLabel}</div>
-                        ${starIcon}
-                    </div>
-                `;
+                barsHtml += `<div class="bar-wrapper"><div class="bar-value">${entry.hours}h</div><div class="bar" style="height: ${heightPercent}%;"></div><div class="bar-label">${entry.dateLabel}</div>${starIcon}</div>`;
             });
 
-            dashContent.innerHTML = `
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-value">${avgHours}h</div>
-                        <div class="stat-label">Avg Sleep</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value">${avgCycles}</div>
-                        <div class="stat-label">Cycles</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value">${avgRating} <span style="font-size: 1rem; color: var(--star-color);">★</span></div>
-                        <div class="stat-label">Quality</div>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <div class="chart-title">Recent Sleep History</div>
-                    <div class="chart">
-                        ${barsHtml}
-                    </div>
-                </div>
-            `;
-        } catch (error) {
-            console.error("Error fetching documents: ", error);
-            dashContent.innerHTML = `<div class="empty-state"><p style="color: red;">Error connecting to Firebase.</p></div>`;
-        }
-    }
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(err => {});
+            dashContent.innerHTML = `<div class="stats-grid"><div class="stat-box"><div class="stat-value">${avgHours}h</div><div class="stat-label">Avg Sleep</div></div><div class="stat-box"><div class="stat-value">${avgCycles}</div><div class="stat-label">Cycles</div></div><div class="stat-box"><div class="stat-value">${avgRating} <span style="font-size: 1rem; color: var(--star-color);">★</span></div><div class="stat-label">Quality</div></div></div><div class="chart-container"><div class="chart-title">Recent Sleep History</div><div class="chart">${barsHtml}</div></div>`;
+        } catch (error) { console.error(error); dashContent.innerHTML = `<div class="empty-state"><p style="color: red;">Error connecting to Firebase.</p></div>`; }
     }
 </script>
 
