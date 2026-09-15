@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Cycle Calculator</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    
+    <style>
+        :root {
+            --bg-color: #1a1c1e;     
+            --card-bg: #2d3238;      
+            --primary: #9b2226;      
+            --primary-hover: #7a1b1e;
+            --text-main: #f8fafc;
+            --text-muted: #9ca3af;
+            --optimal-bg: rgba(155, 34, 38, 0.15);
+            --optimal-border: #9b2226;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 { text-align: center; margin-top: 0; color: var(--text-main); }
+        p.subtitle { text-align: center; color: var(--text-muted); margin-bottom: 2rem; }
+
+        .tabs {
+            display: flex; gap: 0.5rem; margin-bottom: 1.5rem;
+            background: rgba(0,0,0,0.25); padding: 0.35rem; border-radius: 0.5rem;
+        }
+        .tab {
+            flex: 1; padding: 0.75rem; text-align: center; background: transparent;
+            border: none; color: var(--text-muted); cursor: pointer;
+            border-radius: 0.375rem; font-weight: 600; transition: all 0.2s ease-in-out;
+        }
+        .tab.active {
+            background-color: var(--card-bg); color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .input-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .label-row { display: flex; justify-content: space-between; align-items: center; }
+        label { font-weight: 500; color: var(--text-main); }
+        
+        .now-btn, .text-btn {
+            background: none; border: none; color: var(--primary);
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 0;
+        }
+        .now-btn:hover, .text-btn:hover { text-decoration: underline; }
+
+        input[type="time"], input[type="number"] {
+            width: 100%; padding: 0.75rem; border-radius: 0.5rem;
+            border: 1px solid #4b5563; background-color: var(--bg-color);
+            color: white; font-size: 1.1rem; box-sizing: border-box;
+        }
+        input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+        button.calculate-btn {
+            width: 100%; padding: 1rem; background-color: var(--primary);
+            color: white; border: none; border-radius: 0.5rem;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s;
+        }
+        button.calculate-btn:hover { background-color: var(--primary-hover); }
+        
+        button.save-btn {
+            width: 100%; padding: 0.75rem; background-color: transparent;
+            color: var(--primary); border: 2px solid var(--primary); border-radius: 0.5rem;
+            font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 1rem;
+            transition: all 0.2s; display: none;
+        }
+        button.save-btn:hover { background-color: rgba(155, 34, 38, 0.1); }
+        button.save-btn.active { display: block; }
+
+        .results { margin-top: 2rem; display: none; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .results.active { display: block; }
+
+        .results-title { text-align: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600; }
+        .cycle-cards { display: grid; gap: 1rem; }
+        .cycle-card {
+            background-color: var(--bg-color); padding: 1rem 1.25rem; border-radius: 0.5rem;
+            display: flex; justify-content: space-between; align-items: center; border: 1px solid #4b5563;
+        }
+        .cycle-card.optimal { background-color: var(--optimal-bg); border-color: var(--optimal-border); }
+        .time { font-size: 1.5rem; font-weight: bold; color: var(--text-main); }
+        .cycle-card.optimal .time { color: var(--primary); }
+        .details { text-align: right; display: flex; flex-direction: column; }
+        .details span:first-child { font-weight: 600; }
+        .optimal-badge {
+            font-size: 0.75rem; background-color: var(--primary); color: white;
+            padding: 0.15rem 0.5rem; border-radius: 1rem; margin-bottom: 0.3rem;
+            display: inline-block; align-self: flex-end; text-transform: uppercase; font-weight: bold;
+        }
+
+        /* History Section Styles */
+        .history-section {
+            margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #4b5563;
+        }
+        .history-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+        }
+        .history-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .history-item {
+            background-color: var(--bg-color); padding: 0.75rem 1rem; border-radius: 0.5rem;
+            display: flex; justify-content: space-between; font-size: 0.9rem; border: 1px solid #374151;
+        }
+        .history-date { color: var(--text-muted); }
+        .history-data { font-weight: bold; color: var(--text-main); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sleep Cycle Calculator</h1>
+    <p class="subtitle">Wake up feeling refreshed by completing 90-minute sleep cycles.</p>
+
+    <div class="tabs">
+        <button class="tab active" onclick="setMode('wake')" id="tab-wake">I want to wake up at...</button>
+        <button class="tab" onclick="setMode('sleep')" id="tab-sleep">I'm going to bed at...</button>
+    </div>
+
+    <div class="input-group">
+        <div class="label-row">
+            <label id="time-label">Target Wake-up Time:</label>
+            <button class="now-btn" onclick="setTimeToNow()">Use Current Time</button>
+        </div>
+        <input type="time" id="time-input" value="07:00">
+    </div>
+
+    <div class="input-group">
+        <label>Time to fall asleep (minutes):</label>
+        <input type="number" id="fall-asleep-input" value="15" min="0" max="60">
+    </div>
+
+    <button class="calculate-btn" onclick="calculate()">Calculate Times</button>
+
+    <div class="results" id="results-container">
+        <div class="results-title" id="results-title">Suggested Bedtimes:</div>
+        <div class="cycle-cards" id="cycle-cards"></div>
+        <button class="save-btn" id="save-btn" onclick="saveToHistory()">Save this schedule</button>
+    </div>
+
+    <div class="history-section">
+        <div class="history-header">
+            <h3>Recent History</h3>
+            <button class="text-btn" onclick="clearHistory()">Clear All</button>
+        </div>
+        <div class="history-list" id="history-list">
+            <!-- History items will load here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentMode = 'wake'; 
+    let currentCalculation = null; // Temporarily holds the data before saving
+
+    // --- Core Calculator Functions ---
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById('tab-wake').classList.toggle('active', mode === 'wake');
+        document.getElementById('tab-sleep').classList.toggle('active', mode === 'sleep');
+        document.getElementById('time-label').textContent = mode === 'wake' ? 'Target Wake-up Time:' : 'Target Bedtime:';
+        document.getElementById('results-container').classList.remove('active');
+        document.getElementById('save-btn').classList.remove('active');
+    }
+    
+    function setTimeToNow() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('time-input').value = `${hours}:${minutes}`;
+        calculate();
+    }
+
+    function formatTime(date) {
+        return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function calculate() {
+        const timeInput = document.getElementById('time-input').value;
+        const fallAsleepMins = parseInt(document.getElementById('fall-asleep-input').value) || 0;
+        if (!timeInput) return alert("Please select a time.");
+
+        const [hours, minutes] = timeInput.split(':').map(Number);
+        const baseDate = new Date();
+        baseDate.setHours(hours, minutes, 0, 0);
+
+        const cycles = [6, 5, 4, 3]; 
+        const resultsContainer = document.getElementById('cycle-cards');
+        resultsContainer.innerHTML = ''; 
+
+        // Save data temporarily for the history button
+        currentCalculation = {
+            target: formatTime(baseDate),
+            mode: currentMode === 'wake' ? 'Wake at' : 'Bed at'
+        };
+
+        cycles.forEach(cycle => {
+            const cycleMinutes = cycle * 90;
+            let resultDate = new Date(baseDate.getTime());
+
+            if (currentMode === 'wake') {
+                resultDate.setMinutes(resultDate.getMinutes() - cycleMinutes - fallAsleepMins);
+            } else {
+                resultDate.setMinutes(resultDate.getMinutes() + cycleMinutes + fallAsleepMins);
+            }
+
+            const totalSleepHours = (cycleMinutes / 60).toFixed(1);
+            const isOptimal = cycle === 5 || cycle === 6;
+
+            const card = document.createElement('div');
+            card.className = `cycle-card ${isOptimal ? 'optimal' : ''}`;
+            card.innerHTML = `
+                <div class="time">${formatTime(resultDate)}</div>
+                <div class="details">
+                    ${isOptimal ? '<span class="optimal-badge">Optimal</span>' : ''}
+                    <span>${cycle} Cycles</span>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">${totalSleepHours} hours</span>
+                </div>
+            `;
+            resultsContainer.appendChild(card);
+        });
+
+        document.getElementById('results-title').textContent = currentMode === 'wake' ? 'Suggested Bedtimes:' : 'Suggested Wake Times:';
+        
+        const container = document.getElementById('results-container');
+        container.classList.remove('active');
+        setTimeout(() => container.classList.add('active'), 10);
+        
+        document.getElementById('save-btn').classList.add('active');
+        document.getElementById('save-btn').textContent = "Save this schedule";
+    }
+
+    // --- LocalStorage History Functions ---
+    function loadHistory() {
+        // Load the string from localStorage, or start a new empty array if it doesn't exist
+        const savedData = localStorage.getItem('sleepTrackerHistory');
+        const historyArray = savedData ? JSON.parse(savedData) : [];
+        
+        const listElement = document.getElementById('history-list');
+        listElement.innerHTML = ''; // Clear current list
+
+        if (historyArray.length === 0) {
+            listElement.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">No saved schedules yet.</div>';
+            return;
+        }
+
+        // Loop through the array and create HTML elements for each record
+        historyArray.forEach(record => {
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerHTML = `
+                <span class="history-date">${record.date}</span>
+                <span class="history-data">${record.mode}: ${record.target}</span>
+            `;
+            listElement.appendChild(item);
+        });
+    }
+
+    function saveToHistory() {
+        if (!currentCalculation) return;
+
+        // 1. Get the current array from local storage
+        const savedData = localStorage.getItem('sleepTrackerHistory');
+        let historyArray = savedData ? JSON.parse(savedData) : [];
+
+        // 2. Add the new record with today's date
+        const newRecord = {
+            date: new Date().toLocaleDateString(),
+            mode: currentCalculation.mode,
+            target: currentCalculation.target
+        };
+        
+        // Add to the beginning of the array
+        historyArray.unshift(newRecord); 
+        
+        // Keep only the 5 most recent records
+        if (historyArray.length > 5) historyArray.pop(); 
+
+        // 3. Stringify the array and save it back to localStorage
+        localStorage.setItem('sleepTrackerHistory', JSON.stringify(historyArray));
+        
+        // Update the UI
+        document.getElementById('save-btn').textContent = "✓ Saved!";
+        loadHistory();
+    }
+
+    function clearHistory() {
+        if(confirm("Delete all history?")) {
+            localStorage.removeItem('sleepTrackerHistory');
+            loadHistory();
+        }
+    }
+
+    // Initialize the app on page load
+    loadHistory();
+    calculate();
+    
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('Service Worker not registered', err));
+    }
+</script>
+
+</body>
+</html>
