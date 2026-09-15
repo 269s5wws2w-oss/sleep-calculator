@@ -8,6 +8,7 @@
     <link rel="apple-touch-icon" href="icon.png">
     
     <style>
+        /* All your exact same CSS from before */
         :root {
             --bg-color: #1a1c1e;     
             --card-bg: #2d3238;      
@@ -17,38 +18,22 @@
             --text-muted: #9ca3af;
             --optimal-bg: rgba(155, 34, 38, 0.15);
             --optimal-border: #9b2226;
-            --star-color: #fbbf24;   /* Yellow/Gold for stars */
+            --star-color: #fbbf24;   
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color); color: var(--text-main);
-            margin: 0; padding: 2rem 1rem; display: flex; justify-content: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background-color: var(--card-bg); padding: 2rem; border-radius: 1rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); width: 100%; max-width: 500px;
-        }
-
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 2rem 1rem; display: flex; justify-content: center; min-height: 100vh; }
+        .container { background-color: var(--card-bg); padding: 2rem; border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); width: 100%; max-width: 500px; }
         h1 { text-align: center; margin-top: 0; color: var(--text-main); }
         p.subtitle { text-align: center; color: var(--text-muted); margin-bottom: 1.5rem; }
 
-        /* Navigation */
         .nav-tabs { display: flex; border-bottom: 2px solid #374151; margin-bottom: 2rem; }
-        .nav-tab {
-            flex: 1; text-align: center; padding: 0.75rem; background: none; border: none;
-            color: var(--text-muted); font-weight: bold; font-size: 1rem; cursor: pointer;
-            border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s;
-        }
+        .nav-tab { flex: 1; text-align: center; padding: 0.75rem; background: none; border: none; color: var(--text-muted); font-weight: bold; font-size: 1rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
         .nav-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
         .view-section { display: none; animation: fadeIn 0.3s ease-in-out; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Calculator Tools */
         .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: rgba(0,0,0,0.25); padding: 0.35rem; border-radius: 0.5rem; }
         .tab { flex: 1; padding: 0.75rem; text-align: center; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 0.375rem; font-weight: 600; }
         .tab.active { background-color: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
@@ -56,10 +41,8 @@
         .input-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .label-row { display: flex; justify-content: space-between; align-items: center; }
         label { font-weight: 500; color: var(--text-main); }
-        
         .now-btn { background: none; border: none; color: var(--primary); font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 0; }
         .now-btn:hover { text-decoration: underline; }
-        
         input[type="time"], input[type="number"] { width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #4b5563; background-color: var(--bg-color); color: white; font-size: 1.1rem; box-sizing: border-box; }
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         
@@ -70,10 +53,7 @@
         .results-title { text-align: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600; }
         .cycle-cards { display: grid; gap: 1rem; }
         
-        .cycle-card {
-            background-color: var(--bg-color); padding: 1rem; border-radius: 0.5rem;
-            display: flex; justify-content: space-between; align-items: center; border: 1px solid #4b5563;
-        }
+        .cycle-card { background-color: var(--bg-color); padding: 1rem; border-radius: 0.5rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid #4b5563; }
         .cycle-card.optimal { background-color: var(--optimal-bg); border-color: var(--optimal-border); }
         .time { font-size: 1.5rem; font-weight: bold; color: var(--text-main); margin-bottom: 0.25rem; }
         .cycle-card.optimal .time { color: var(--primary); }
@@ -82,15 +62,9 @@
         .card-right { display: flex; flex-direction: column; align-items: flex-end; }
         
         .optimal-badge { font-size: 0.75rem; background-color: var(--primary); color: white; padding: 0.15rem 0.5rem; border-radius: 1rem; margin-bottom: 0.3rem; font-weight: bold; text-transform: uppercase; }
-        
-        .save-card-btn {
-            background-color: transparent; border: 1px solid var(--primary); color: var(--primary);
-            padding: 0.4rem 0.8rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: bold;
-            cursor: pointer; margin-top: 0.5rem; transition: all 0.2s;
-        }
+        .save-card-btn { background-color: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 0.4rem 0.8rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: bold; cursor: pointer; margin-top: 0.5rem; transition: all 0.2s; }
         .save-card-btn:hover { background-color: var(--primary); color: white; }
 
-        /* Dashboard UI - Updated for 3 Columns */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 2rem; }
         .stat-box { background-color: var(--bg-color); padding: 1rem 0.5rem; border-radius: 0.5rem; text-align: center; border: 1px solid #374151; }
         .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-bottom: 0.25rem; }
@@ -105,21 +79,10 @@
         .bar-value { font-size: 0.7rem; color: white; margin-bottom: 0.25rem; font-weight: bold; }
         .empty-state { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
 
-        /* Rating Modal UI */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8); display: none;
-            justify-content: center; align-items: center; z-index: 100;
-            animation: fadeIn 0.2s;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; animation: fadeIn 0.2s; }
         .modal-overlay.active { display: flex; }
-        .modal-card {
-            background: var(--card-bg); padding: 2rem; border-radius: 1rem;
-            text-align: center; border: 1px solid #4b5563; max-width: 90%; width: 320px;
-        }
+        .modal-card { background: var(--card-bg); padding: 2rem; border-radius: 1rem; text-align: center; border: 1px solid #4b5563; max-width: 90%; width: 320px; }
         .stars-container { display: flex; justify-content: center; gap: 0.5rem; margin: 1.5rem 0; flex-direction: row-reverse; }
-        
-        /* CSS Trick to highlight stars on hover */
         .star-btn { background: none; border: none; font-size: 2.5rem; color: #4b5563; cursor: pointer; transition: color 0.2s; padding: 0; }
         .star-btn:hover, .star-btn:hover ~ .star-btn { color: var(--star-color); }
     </style>
@@ -171,8 +134,6 @@
     <div class="modal-card">
         <h3 style="margin-top: 0;">Rate your sleep</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem;">How refreshed did you feel?</p>
-        
-        <!-- We use flex-direction: row-reverse so the CSS hover trick works left-to-right -->
         <div class="stars-container">
             <button class="star-btn" onclick="submitRating(5)">★</button>
             <button class="star-btn" onclick="submitRating(4)">★</button>
@@ -180,13 +141,37 @@
             <button class="star-btn" onclick="submitRating(2)">★</button>
             <button class="star-btn" onclick="submitRating(1)">★</button>
         </div>
-        
         <button onclick="closeModal()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; margin-top: 0.5rem; text-decoration: underline;">Cancel</button>
     </div>
 </div>
 
-<script>
-    function switchMainTab(tab) {
+<!-- Notice the type="module" here! -->
+<script type="module">
+    // 1. IMPORT FIREBASE SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+    // 2. PASTE YOUR FIREBASE CONFIG HERE
+   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAOx7X94-LnEKPkQRecWBHoh9Fn_xWluAs",
+  authDomain: "sleep-calculator-7c704.firebaseapp.com",
+  projectId: "sleep-calculator-7c704",
+  storageBucket: "sleep-calculator-7c704.firebasestorage.app",
+  messagingSenderId: "143114798745",
+  appId: "1:143114798745:web:3da8276e9511b4e3b55a08",
+  measurementId: "G-N42CYFGT7G"
+};
+
+    // 3. INITIALIZE CLOUD CONNECTION
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentMode = 'wake'; 
+    let pendingLog = null; 
+
+    // Because this is a module, we have to attach functions to the window so the HTML buttons can see them
+    window.switchMainTab = function(tab) {
         document.getElementById('nav-calculator').classList.toggle('active', tab === 'calculator');
         document.getElementById('nav-dashboard').classList.toggle('active', tab === 'dashboard');
         document.getElementById('view-calculator').classList.toggle('active', tab === 'calculator');
@@ -194,10 +179,7 @@
         if(tab === 'dashboard') renderDashboard();
     }
 
-    let currentMode = 'wake'; 
-    let pendingLog = null; // Temporarily holds data while the modal is open
-
-    function setMode(mode) {
+    window.setMode = function(mode) {
         currentMode = mode;
         document.getElementById('tab-wake').classList.toggle('active', mode === 'wake');
         document.getElementById('tab-sleep').classList.toggle('active', mode === 'sleep');
@@ -205,17 +187,17 @@
         document.getElementById('results-container').classList.remove('active');
     }
     
-    function setTimeToNow() {
+    window.setTimeToNow = function() {
         const now = new Date();
         document.getElementById('time-input').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        calculate();
+        window.calculate();
     }
 
     function formatTime(date) {
         return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     }
 
-    function calculate() {
+    window.calculate = function() {
         const timeInput = document.getElementById('time-input').value;
         const fallAsleepMins = parseInt(document.getElementById('fall-asleep-input').value) || 0;
         if (!timeInput) return alert("Please select a time.");
@@ -239,8 +221,6 @@
 
             const card = document.createElement('div');
             card.className = `cycle-card ${isOptimal ? 'optimal' : ''}`;
-            
-            // Changed this button to open the modal instead of instantly saving
             const btnHtml = `<button class="save-card-btn" onclick="openModal('${formatTime(resultDate)}', ${cycle}, ${totalHours})">Save entry</button>`;
 
             card.innerHTML = `
@@ -261,122 +241,138 @@
         document.getElementById('results-container').classList.add('active');
     }
 
-    // --- Modal Logic ---
-    function openModal(timeStr, cycles, hours) {
+    window.openModal = function(timeStr, cycles, hours) {
         pendingLog = { time: timeStr, cycles: parseInt(cycles), hours: parseFloat(hours) };
         document.getElementById('rating-modal').classList.add('active');
     }
 
-    function closeModal() {
+    window.closeModal = function() {
         document.getElementById('rating-modal').classList.remove('active');
         pendingLog = null;
     }
 
-    function submitRating(ratingNumber) {
+    // --- FIREBASE: SAVE DATA TO CLOUD ---
+    window.submitRating = async function(ratingNumber) {
         if (!pendingLog) return;
-
-        const savedData = localStorage.getItem('sleepTrackerData');
-        let historyArray = savedData ? JSON.parse(savedData) : [];
         
+        // Show loading state on the modal
+        document.querySelector('.stars-container').innerHTML = '<p style="color: var(--primary);">Saving to cloud...</p>';
+
         const dateObj = new Date();
         const dateStr = dateObj.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
 
-        const newEntry = {
-            id: Date.now(),
-            dateLabel: dateStr,
-            time: pendingLog.time,
-            cycles: pendingLog.cycles,
-            hours: pendingLog.hours,
-            rating: ratingNumber
-        };
-        
-        historyArray.push(newEntry);
-        if (historyArray.length > 7) historyArray.shift(); // Keep last 7 days
-        
-        localStorage.setItem('sleepTrackerData', JSON.stringify(historyArray));
-        
-        closeModal();
-        
-        // Brief alert to confirm it worked, then switch to dashboard to show off the math
-        alert('Log saved!');
-        switchMainTab('dashboard');
+        try {
+            // Push the data to your 'sleepLogs' collection in Firestore
+            await addDoc(collection(db, "sleepLogs"), {
+                dateLabel: dateStr,
+                time: pendingLog.time,
+                cycles: pendingLog.cycles,
+                hours: pendingLog.hours,
+                rating: ratingNumber,
+                timestamp: Date.now() // Allows us to sort them by date easily
+            });
+            
+            window.closeModal();
+            // Reset the stars for next time
+            document.querySelector('.stars-container').innerHTML = `
+                <button class="star-btn" onclick="submitRating(5)">★</button>
+                <button class="star-btn" onclick="submitRating(4)">★</button>
+                <button class="star-btn" onclick="submitRating(3)">★</button>
+                <button class="star-btn" onclick="submitRating(2)">★</button>
+                <button class="star-btn" onclick="submitRating(1)">★</button>
+            `;
+            window.switchMainTab('dashboard');
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            alert("Database error: Could not save to cloud.");
+        }
     }
 
-    // --- Dashboard Math ---
-    function renderDashboard() {
+    // --- FIREBASE: FETCH DATA FROM CLOUD ---
+    window.renderDashboard = async function() {
         const dashContent = document.getElementById('dashboard-content');
-        const savedData = localStorage.getItem('sleepTrackerData');
-        const historyArray = savedData ? JSON.parse(savedData) : [];
+        dashContent.innerHTML = `<div class="empty-state"><p>Loading data from cloud...</p></div>`;
 
-        if (historyArray.length === 0) {
-            dashContent.innerHTML = `<div class="empty-state"><p>No sleep data logged yet.</p></div>`;
-            return;
-        }
-
-        let totalHours = 0;
-        let totalCycles = 0;
-        let totalRating = 0;
-        let ratedEntriesCount = 0;
-        
-        historyArray.forEach(entry => {
-            totalHours += entry.hours;
-            totalCycles += entry.cycles;
-            if (entry.rating) {
-                totalRating += entry.rating;
-                ratedEntriesCount++;
-            }
-        });
-
-        const avgHours = (totalHours / historyArray.length).toFixed(1);
-        const avgCycles = (totalCycles / historyArray.length).toFixed(1);
-        const avgRating = ratedEntriesCount > 0 ? (totalRating / ratedEntriesCount).toFixed(1) : "-";
-
-        const maxHours = Math.max(...historyArray.map(e => e.hours), 9); 
-        let barsHtml = '';
-
-        historyArray.forEach(entry => {
-            const heightPercent = (entry.hours / maxHours) * 100;
-            // Adds a small star below the bar if they rated it
-            const starIcon = entry.rating ? `<div style="color: var(--star-color); font-size: 0.6rem; margin-top: 2px;">★ ${entry.rating}</div>` : '';
+        try {
+            // Query the database for the 7 most recent entries
+            const q = query(collection(db, "sleepLogs"), orderBy("timestamp", "desc"), limit(7));
+            const querySnapshot = await getDocs(q);
             
-            barsHtml += `
-                <div class="bar-wrapper">
-                    <div class="bar-value">${entry.hours}h</div>
-                    <div class="bar" style="height: ${heightPercent}%;"></div>
-                    <div class="bar-label">${entry.dateLabel}</div>
-                    ${starIcon}
+            let historyArray = [];
+            querySnapshot.forEach((doc) => {
+                // Add the cloud document ID so we can track it
+                historyArray.push({ id: doc.id, ...doc.data() });
+            });
+            
+            // Reverse the array so the oldest is on the left in the chart
+            historyArray.reverse();
+
+            if (historyArray.length === 0) {
+                dashContent.innerHTML = `<div class="empty-state"><p>No sleep data logged yet.</p></div>`;
+                return;
+            }
+
+            let totalHours = 0;
+            let totalCycles = 0;
+            let totalRating = 0;
+            let ratedEntriesCount = 0;
+            
+            historyArray.forEach(entry => {
+                totalHours += entry.hours;
+                totalCycles += entry.cycles;
+                if (entry.rating) {
+                    totalRating += entry.rating;
+                    ratedEntriesCount++;
+                }
+            });
+
+            const avgHours = (totalHours / historyArray.length).toFixed(1);
+            const avgCycles = (totalCycles / historyArray.length).toFixed(1);
+            const avgRating = ratedEntriesCount > 0 ? (totalRating / ratedEntriesCount).toFixed(1) : "-";
+
+            const maxHours = Math.max(...historyArray.map(e => e.hours), 9); 
+            let barsHtml = '';
+
+            historyArray.forEach(entry => {
+                const heightPercent = (entry.hours / maxHours) * 100;
+                const starIcon = entry.rating ? `<div style="color: var(--star-color); font-size: 0.6rem; margin-top: 2px;">★ ${entry.rating}</div>` : '';
+                
+                barsHtml += `
+                    <div class="bar-wrapper">
+                        <div class="bar-value">${entry.hours}h</div>
+                        <div class="bar" style="height: ${heightPercent}%;"></div>
+                        <div class="bar-label">${entry.dateLabel}</div>
+                        ${starIcon}
+                    </div>
+                `;
+            });
+
+            dashContent.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value">${avgHours}h</div>
+                        <div class="stat-label">Avg Sleep</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${avgCycles}</div>
+                        <div class="stat-label">Cycles</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${avgRating} <span style="font-size: 1rem; color: var(--star-color);">★</span></div>
+                        <div class="stat-label">Quality</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Recent Sleep History</div>
+                    <div class="chart">
+                        ${barsHtml}
+                    </div>
                 </div>
             `;
-        });
-
-        dashContent.innerHTML = `
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-value">${avgHours}h</div>
-                    <div class="stat-label">Avg Sleep</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">${avgCycles}</div>
-                    <div class="stat-label">Cycles</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value">${avgRating} <span style="font-size: 1rem; color: var(--star-color);">★</span></div>
-                    <div class="stat-label">Quality</div>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <div class="chart-title">Recent Sleep History</div>
-                <div class="chart">
-                    ${barsHtml}
-                </div>
-            </div>
-            
-            <button onclick="if(confirm('Clear all data?')) { localStorage.removeItem('sleepTrackerData'); renderDashboard(); }" 
-                    style="width: 100%; padding: 0.75rem; background: transparent; border: 1px solid #4b5563; color: var(--text-muted); border-radius: 0.5rem; cursor: pointer;">
-                Clear Data History
-            </button>
-        `;
+        } catch (error) {
+            console.error("Error fetching documents: ", error);
+            dashContent.innerHTML = `<div class="empty-state"><p style="color: red;">Error connecting to Firebase.</p></div>`;
+        }
     }
 
     if ('serviceWorker' in navigator) {
