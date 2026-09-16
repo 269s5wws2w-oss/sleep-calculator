@@ -18,7 +18,7 @@
             --optimal-bg: rgba(155, 34, 38, 0.15);
             --optimal-border: #9b2226;
             --star-color: #fbbf24;
-            --surplus-color: #10b981; /* Green for sleep surplus */
+            --surplus-color: #10b981; 
         }
 
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 2rem 1rem; display: flex; justify-content: center; min-height: 100vh; }
@@ -62,12 +62,11 @@
         .save-card-btn:hover { background-color: var(--primary); color: white; }
 
         /* Dashboard Styles */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; margin-bottom: 2rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
         .stat-box { background-color: var(--bg-color); padding: 1rem 0.5rem; border-radius: 0.5rem; text-align: center; border: 1px solid #374151; }
         .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-bottom: 0.25rem; }
         .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
-        
-        .chart-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; margin-bottom: 2rem; }
+        .chart-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; margin-bottom: 1.5rem; }
         .chart-title { font-size: 1rem; font-weight: bold; margin-bottom: 1.5rem; text-align: center; }
         .chart { display: flex; align-items: flex-end; justify-content: space-around; height: 150px; gap: 0.5rem; }
         .bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; }
@@ -75,6 +74,11 @@
         .bar-label { margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted); }
         .bar-value { font-size: 0.7rem; color: white; margin-bottom: 0.25rem; font-weight: bold; }
         .empty-state { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
+
+        /* Insight Engine Styles */
+        .insight-box { background-color: var(--optimal-bg); border: 1px solid var(--optimal-border); padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center; }
+        .insight-icon { font-size: 1.5rem; }
+        .insight-text { font-size: 0.9rem; line-height: 1.4; }
 
         /* Wind Down Player Styles */
         .player-container { background-color: var(--bg-color); padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #374151; }
@@ -175,7 +179,7 @@
     // ==========================================
     // ⚠️ PASTE YOUR FIREBASE CONFIG HERE ⚠️
     // ==========================================
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAOx7X94-LnEKPkQRecWBHoh9Fn_xWluAs",
   authDomain: "sleep-calculator-7c704.firebaseapp.com",
@@ -199,7 +203,7 @@ const firebaseConfig = {
         document.getElementById('view-winddown').classList.toggle('active', tab === 'winddown');
         document.getElementById('view-dashboard').classList.toggle('active', tab === 'dashboard');
         
-        if(tab === 'dashboard') renderDashboard();
+        if(tab === 'dashboard') window.renderDashboard();
     }
 
     // --- AUDIO PLAYER LOGIC ---
@@ -299,89 +303,103 @@ const firebaseConfig = {
 
     window.renderDashboard = async function() {
         const dashContent = document.getElementById('dashboard-content');
-        dashContent.innerHTML = `<div class="empty-state"><p>Loading data from cloud...</p></div>`;
+        dashContent.innerHTML = `<div class="empty-state"><p>Analyzing cloud data...</p></div>`;
         try {
-            const q = query(collection(db, "sleepLogs"), orderBy("timestamp", "desc"), limit(7));
+            // NEW: Fetching up to 30 days of logs for deeper correlation analysis
+            const q = query(collection(db, "sleepLogs"), orderBy("timestamp", "desc"), limit(30));
             const querySnapshot = await getDocs(q);
-            let historyArray = [];
-            querySnapshot.forEach((doc) => historyArray.push({ id: doc.id, ...doc.data() }));
+            let allLogs = [];
+            querySnapshot.forEach((doc) => allLogs.push({ id: doc.id, ...doc.data() }));
             
-            if (historyArray.length === 0) { dashContent.innerHTML = `<div class="empty-state"><p>No sleep data logged yet.</p></div>`; return; }
+            if (allLogs.length === 0) { dashContent.innerHTML = `<div class="empty-state"><p>No sleep data logged yet.</p></div>`; return; }
 
-            // NEW: Sleep Debt and Streak Logic
+            // Extract the most recent 7 logs for the bar chart and visual stats
+            const recent7 = allLogs.slice(0, 7);
+
+            // Calculate metrics strictly for the last 7 entries
             let sleepDebt = 0; 
             const BASELINE_HOURS = 8;
+            recent7.forEach(entry => { sleepDebt += (BASELINE_HOURS - entry.hours); });
             
-            // Calculate Debt over fetched logs
-            historyArray.forEach(entry => {
-                sleepDebt += (BASELINE_HOURS - entry.hours);
-            });
-            
-            // Format the debt string (surplus is negative debt)
-            let debtString = "0h";
-            let debtColor = "var(--primary)";
-            if (sleepDebt > 0) {
-                debtString = `-${sleepDebt.toFixed(1)}h`; 
-            } else if (sleepDebt < 0) {
-                debtString = `+${Math.abs(sleepDebt).toFixed(1)}h`;
-                debtColor = "var(--surplus-color)"; 
+            let debtString = "0h", debtColor = "var(--primary)";
+            if (sleepDebt > 0) debtString = `-${sleepDebt.toFixed(1)}h`; 
+            else if (sleepDebt < 0) { debtString = `+${Math.abs(sleepDebt).toFixed(1)}h`; debtColor = "var(--surplus-color)"; }
+
+            // Optimal Streak calculation across all loaded logs
+            let currentStreak = 0, streakBroken = false;
+            for (let i = 0; i < allLogs.length; i++) {
+                if (allLogs[i].cycles >= 5 && !streakBroken) currentStreak++;
+                else streakBroken = true;
             }
 
-            // Calculate Optimal Streak (consecutive logs with 5+ cycles)
-            let currentStreak = 0;
-            let streakBroken = false;
-            // historyArray is already newest-to-oldest from the query
-            for (let i = 0; i < historyArray.length; i++) {
-                if (historyArray[i].cycles >= 5 && !streakBroken) {
-                    currentStreak++;
-                } else {
-                    streakBroken = true;
+            // CORRELATION ENGINE: Finding optimal cycle count
+            const ratedLogs = allLogs.filter(log => log.rating);
+            let insightHtml = '';
+
+            if (ratedLogs.length >= 3) {
+                // Group by cycle count and calculate averages
+                let cycleMap = {};
+                ratedLogs.forEach(log => {
+                    if (!cycleMap[log.cycles]) cycleMap[log.cycles] = { sum: 0, count: 0 };
+                    cycleMap[log.cycles].sum += log.rating;
+                    cycleMap[log.cycles].count += 1;
+                });
+
+                let bestCycle = null;
+                let bestAvg = 0;
+                
+                for (let c in cycleMap) {
+                    let avg = cycleMap[c].sum / cycleMap[c].count;
+                    if (avg > bestAvg) {
+                        bestAvg = avg;
+                        bestCycle = c;
+                    }
                 }
+
+                insightHtml = `
+                    <div class="insight-box">
+                        <div class="insight-icon">🧠</div>
+                        <div class="insight-text">
+                            <strong>AI Insight:</strong> Based on your last ${ratedLogs.length} rated nights, you consistently feel the most refreshed (averaging <strong>${bestAvg.toFixed(1)} stars</strong>) when you complete exactly <strong>${bestCycle} sleep cycles</strong>.
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Fallback state if they haven't logged enough star ratings yet
+                insightHtml = `
+                    <div class="insight-box" style="background-color: transparent; border: 1px dashed #4b5563;">
+                        <div class="insight-text" style="color: var(--text-muted);">
+                            Log at least 3 rated nights to unlock your personalized trend analysis.
+                        </div>
+                    </div>
+                `;
             }
 
-            // Reverse for the bar chart (oldest to newest)
-            historyArray.reverse();
-
-            // Existing averages calculation
+            // Reverse for the bar chart (chronological: oldest to newest)
+            recent7.reverse();
             let totalHours = 0, totalCycles = 0, totalRating = 0, ratedEntriesCount = 0;
-            historyArray.forEach(entry => { totalHours += entry.hours; totalCycles += entry.cycles; if (entry.rating) { totalRating += entry.rating; ratedEntriesCount++; } });
+            recent7.forEach(entry => { totalHours += entry.hours; totalCycles += entry.cycles; if (entry.rating) { totalRating += entry.rating; ratedEntriesCount++; } });
             
-            const avgHours = (totalHours / historyArray.length).toFixed(1);
+            const avgHours = (totalHours / recent7.length).toFixed(1);
             const avgRating = ratedEntriesCount > 0 ? (totalRating / ratedEntriesCount).toFixed(1) : "-";
-            const maxHours = Math.max(...historyArray.map(e => e.hours), 9); 
+            const maxHours = Math.max(...recent7.map(e => e.hours), 9); 
             let barsHtml = '';
 
-            historyArray.forEach(entry => {
+            recent7.forEach(entry => {
                 const heightPercent = (entry.hours / maxHours) * 100;
                 const starIcon = entry.rating ? `<div style="color: var(--star-color); font-size: 0.6rem; margin-top: 2px;">★ ${entry.rating}</div>` : '';
                 barsHtml += `<div class="bar-wrapper"><div class="bar-value">${entry.hours}h</div><div class="bar" style="height: ${heightPercent}%;"></div><div class="bar-label">${entry.dateLabel}</div>${starIcon}</div>`;
             });
 
             dashContent.innerHTML = `
+                ${insightHtml}
                 <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-value">${avgHours}h</div>
-                        <div class="stat-label">Avg Sleep</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value" style="color: ${debtColor};">${debtString}</div>
-                        <div class="stat-label">Sleep Debt</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value">${currentStreak} 🔥</div>
-                        <div class="stat-label">Optimal Streak</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value">${avgRating} <span style="font-size: 1rem; color: var(--star-color);">★</span></div>
-                        <div class="stat-label">Avg Quality</div>
-                    </div>
+                    <div class="stat-box"><div class="stat-value">${avgHours}h</div><div class="stat-label">Avg Sleep</div></div>
+                    <div class="stat-box"><div class="stat-value" style="color: ${debtColor};">${debtString}</div><div class="stat-label">Sleep Debt</div></div>
+                    <div class="stat-box"><div class="stat-value">${currentStreak} 🔥</div><div class="stat-label">Optimal Streak</div></div>
+                    <div class="stat-box"><div class="stat-value">${avgRating} <span style="font-size: 1rem; color: var(--star-color);">★</span></div><div class="stat-label">Avg Quality</div></div>
                 </div>
-                <div class="chart-container">
-                    <div class="chart-title">Recent Sleep History</div>
-                    <div class="chart">
-                        ${barsHtml}
-                    </div>
-                </div>
+                <div class="chart-container"><div class="chart-title">Last 7 Days</div><div class="chart">${barsHtml}</div></div>
             `;
         } catch (error) { console.error(error); dashContent.innerHTML = `<div class="empty-state"><p style="color: red;">Error connecting to Firebase.</p></div>`; }
     }
